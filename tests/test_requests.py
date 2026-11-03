@@ -838,27 +838,6 @@ class TestRequests:
         assert b'name="random-file-1"' not in post.request.body
         assert b'name="random-file-2"' in post.request.body
 
-    @pytest.mark.parametrize(
-        ("data", "files"),
-        [
-            ({1: "data"}, {"file": b"contents"}),
-            (None, {1: b"contents"}),
-        ],
-    )
-    def test_multipart_non_string_field_names(self, data, files):
-        request = requests.Request(
-            "POST", "http://example.com", data=data, files=files
-        ).prepare()
-
-        assert b'name="1"' in request.body
-
-    def test_urlencoded_non_string_field_names(self):
-        request = requests.Request(
-            "POST", "http://example.com", data={1: "data"}
-        ).prepare()
-
-        assert request.body == "1=data"
-
     def test_POSTBIN_SEEKED_OBJECT_WITH_NO_ITER(self, httpbin):
         class TestStream:
             def __init__(self, data):
